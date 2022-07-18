@@ -1,0 +1,70 @@
+on: workflow_dispatch
+
+jobs:
+  # This step builds our artifacts, uploads them to the workflow run, and
+  # outputs their digest.
+  build:
+    outputs:
+      hashes: ${{ steps.hash.outputs.hashes }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v2
+        name: Set up JDK 11
+        with:
+          java-version: 11
+          distribution: temurin
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v4.4
+        with:
+          maven-version: 3.8.2
+
+      - name: Build maven artifacts
+        id: build
+        run: |
+          mvn clean package
+          # this is the default pattern for artifact, sources and javadoc jars
+          ARTIFACT_PATTERN=./target/$(mvn help:evaluate -Dexpression=project.artifactId -q -DforceStdout)-$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)*.jar
+          echo "::set-output name=artifact_pattern::$ARTIFACT_PATTERN"
+
+      - name: Generate artifact list and hashes
+        shell: bash
+        id: hash
+        run: |
+          echo "::set-output name=hashes::$(sha256sum ${{ steps.build.outputs.artifact_pattern }} | base64 -w0)"
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3.1.0
+        with:
+          name: maven-build-outputs
+          path: ${{ steps.build.outputs.artifact_pattern }}
+          if-no-files-found: error
+
+  # This step calls the generic workflow to generate provenance.
+  provenance:
+    needs: [build]
+    permissions:
+      actions: read
+      id-token: write
+      contents: write
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v1.1.1
+    with:
+      base64-subjects: "${{ needs.build.outputs.hashes }}"
+#       # Upload provenance to a new release
+#       upload-assets: false
+
+  # This step uploads our artifacts to the tagged GitHub release.
+  release:
+    needs: [build, provenance]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Download maven-build-outputs
+        uses: actions/download-artifact@fb598a63ae348fa914e94cd0ff38f362e927b741 # tag=v2.1.0
+        with:
+          name: maven-build-outputs
+
+      - name: Upload assets
+        uses: softprops/action-gh-release@1e07f4398721186383de40550babbdf2b84acfc5 # v0.1.14
+        with:
+          files: "${{ needs.build.outputs.artifacts }}"
