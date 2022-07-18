@@ -5,7 +5,6 @@ jobs:
   # outputs their digest.
   build:
     outputs:
-      artifacts: $${{ steps.build.outputs.artifacts }}
       hashes: ${{ steps.hash.outputs.hashes }}
     runs-on: ubuntu-latest
     steps:
@@ -20,20 +19,18 @@ jobs:
         id: build
         run: |
           ./gradlew clean build
-          # this assumes all outputs are in the ./build/libs directory
-          echo "::set-output name=artifacts::$(find ./build/libs -type f)"
-
+          
       - name: Generate artifact list and hashes
         shell: bash
         id: hash
         run: |
-          echo "::set-output name=hashes::$(sha256sum ${{ steps.build.outputs.artifacts }} | base64 -w0)"
+          echo "::set-output name=hashes::$(sha256sum ./build/libs | base64 -w0)"
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8 # tag=v3.1.0
         with:
           name: gradle-build-outputs
-          path: ${{ steps.build.outputs.artifacts }}
+          path: ./build/libs/
           if-no-files-found: error
 
   # This step calls the generic workflow to generate provenance.
