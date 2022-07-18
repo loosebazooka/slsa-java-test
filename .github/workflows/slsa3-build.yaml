@@ -40,7 +40,7 @@ jobs:
     with:
       base64-subjects: "${{ needs.build.outputs.hashes }}"
       # Upload provenance to a new release
-      upload-assets: true
+      upload-assets: false
 
   # This step uploads our artifacts to the tagged GitHub release.
   release:
