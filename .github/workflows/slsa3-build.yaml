@@ -1,3 +1,5 @@
+on: workflow_dispatch
+
 jobs:
   # This step builds our artifacts, uploads them to the workflow run, and
   # outputs their digest.
