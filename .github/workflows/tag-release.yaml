@@ -13,6 +13,7 @@ jobs:
   tag:
     needs: [ci]
     runs-on: ubuntu-latest
+    steps:
     - name: Check input
       run: |
         if [[ ! "${{ github.event.inputs.version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
