@@ -1,7 +1,12 @@
-apply plugin: 'java'
+import org.gradle.api.publish.maven.internal.publication.DefaultMavenPublication
 
-group 'com.loosebazooka.example'
-version '1.0.0-SNAPSHOT'
+plugins {
+  `java`
+  `maven-publish`
+}
+
+group = "com.loosebazooka.example"
+version = "1.0.0-SNAPSHOT"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11
