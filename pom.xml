@@ -5,6 +5,27 @@
   <groupId>com.loosebazooka.samples</groupId>
   <artifactId>slsa-java-test</artifactId>
   <version>1.0-SNAPSHOT</version>
+
+  <name>slsa java test</name>
+  <description>A SLSA Test Project</description>
+  <url>http://test.loosebazooka.com</url>
+    
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <scm>
+    <connection>
+      scm:git:git://github.com/loosebazooka/slsa-java-test.git
+    </connection>
+    <url>scm:git:git://github.com/loosebazooka/slsa-java-test.git</url>
+    <developerConnection>
+      scm:git:git://github.com/loosebazooka/slsa-java-test.git
+    </developerConnection>
+  </scm>
  
   <properties>
     <maven.compiler.source>11</maven.compiler.source>
