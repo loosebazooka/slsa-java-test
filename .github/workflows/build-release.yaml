@@ -1,0 +1,48 @@
+name: Build Release
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read # To read the workflow path.
+      contents: write # To add assets to a release.
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: 11
+          distribution: 'temurin'
+
+      - name: Build project
+        run: |
+          # this is a special gradle task for building release bundles see build.gradle.kts
+          ./gradlew clean createReleaseBundle
+          cd build/release
+          echo "::set-output name=hashes::$(sha256sum ./* | base64 -w0)"
+
+      - name: Draft GitHub release
+        uses: softprops/action-gh-release@v1
+        id: create-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          draft: true
+          body: See [CHANGELOG.md](https://github.com/$GITHUB_REPOSITORY/CHANGELOG.md) for more details.
+          files: ./build/release/*
+
+  provenance:
+    needs: [build]
+    permissions:
+      actions: read # To read the workflow path.
+      id-token: write # To sign the provenance.
+      contents: write # To add assets to a release.
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v1.2.0
+    with:
+      base64-subjects: "${{ needs.build.outputs.hashes }}"
+      upload-assets: true # Optional: Upload to a new release
