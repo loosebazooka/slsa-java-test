@@ -9,7 +9,6 @@ on:
 
 jobs:
   ci:
-    name: Ensure CI passing
     uses: ./.github/workflows/ci.yaml
   tag:
     needs: [ci]
