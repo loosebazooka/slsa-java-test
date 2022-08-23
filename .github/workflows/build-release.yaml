@@ -9,6 +9,8 @@ jobs:
     permissions:
       actions: read # To read the workflow path.
       contents: write # To add assets to a release.
+    outputs:
+      hashes: ${{ steps.hash.outputs.hashes }}
     steps:
       - name: Check out code
         uses: actions/checkout@v3
