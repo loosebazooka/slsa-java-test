@@ -8,10 +8,10 @@ on:
         default: (for example, 0.1.0)
 
 jobs:
-  ci:
-    uses: ./.github/workflows/ci.yaml
+  # ci:
+  #  uses: ./.github/workflows/ci.yaml
   tag:
-    needs: [ci]
+    # needs: [ci]
     runs-on: ubuntu-latest
     steps:
     - name: Check input
