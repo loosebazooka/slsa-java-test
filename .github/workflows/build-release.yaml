@@ -24,6 +24,7 @@ jobs:
           ./gradlew clean createReleaseBundle
           cd build/release
           echo "::set-output name=hashes::$(sha256sum ./* | base64 -w0)"
+          sha256sum ./*
 
       - name: Draft GitHub release
         uses: softprops/action-gh-release@v1
