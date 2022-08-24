@@ -98,7 +98,7 @@ jobs:
         with:
           name: "${{ needs.provenance.outputs.attestation-name }}"
       - name: Append attestation to release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@cd28b0f5ee8571b76cfdaa62a30d51d752317477 # temporarily attach to a tag with append feature until a release is done
         with:
           tag_name: v${{ github.event.inputs.release_version }}
           files: "${{ needs.provenance.outputs.attestation-name }}"
