@@ -8,28 +8,31 @@ on:
         default: (for example, 0.1.0)
 
 jobs:
-  check-inputs:
+  checks:
     runs-on: ubuntu-latest
     steps:
+      - name: Check out main
+        uses: actions/checkout@v3
+        
       - name: Check inputs
         run: |
           if [[ ! "${{ github.event.inputs.release_version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo 'version "${{ github.event.inputs.release_version }}" not in ###.###.### format'
             exit 1
           fi
-  
-      - name: Check out main
-        uses: actions/checkout@v3
-        
+
       - name: ci
         uses: ./.github/workflows/ci.yaml
         
   create-tag:
-    needs: [check-inputs]
+    needs: [checks]
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
+      - name: Check out main
+        uses: actions/checkout@v3
+
       - name: tag
         uses: actions/github-script@v5
         with:
@@ -89,7 +92,7 @@ jobs:
       contents: write # To add assets to a release.
     uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v1.2.0
     with:
-      base64-subjects: "${{ needs.build.outputs.hashes }}"
+      base64-subjects: "${{ needs.build-release.outputs.hashes }}"
       
   upload-provenance:
     runs-on: ubuntu-latest
