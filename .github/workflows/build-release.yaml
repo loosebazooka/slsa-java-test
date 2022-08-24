@@ -102,3 +102,4 @@ jobs:
         with:
           tag_name: v${{ github.event.inputs.release_version }}
           files: "${{ needs.provenance.outputs.attestation-name }}"
+          append_body: true
