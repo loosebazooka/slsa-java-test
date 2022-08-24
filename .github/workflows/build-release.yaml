@@ -73,7 +73,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           draft: true
-          tag-name: v${{ github.event.inputs.version }}
+          tag_name: v${{ github.event.inputs.version }}
           body: See [CHANGELOG.md](https://github.com/$GITHUB_REPOSITORY/CHANGELOG.md) for more details.
           files: ./build/release/*
 
@@ -100,5 +100,5 @@ jobs:
       - name: Append attestation to release
         uses: softprops/action-gh-release@v0.1.14
         with:
-          tag-name: v${{ github.event.inputs.version }}
+          tag_name: v${{ github.event.inputs.version }}
           files: "${{ needs.provenance.outputs.attestation-name }}"
