@@ -11,28 +11,21 @@ jobs:
   checks:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out main
-        uses: actions/checkout@v3
-        
       - name: Check inputs
         run: |
           if [[ ! "${{ github.event.inputs.release_version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo 'version "${{ github.event.inputs.release_version }}" not in ###.###.### format'
             exit 1
           fi
-
-      - name: ci
-        uses: ./.github/workflows/ci.yaml
+  ci:
+    uses: ./.github/workflows/ci.yaml
         
   create-tag:
-    needs: [checks]
+    needs: [checks, ci]
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
-      - name: Check out main
-        uses: actions/checkout@v3
-
       - name: tag
         uses: actions/github-script@v5
         with:
