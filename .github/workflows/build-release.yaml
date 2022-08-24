@@ -100,5 +100,5 @@ jobs:
       - name: Append attestation to release
         uses: softprops/action-gh-release@v0.1.14
         with:
-          tag_name: v${{ github.event.inputs.version }}
+          tag_name: v${{ github.event.inputs.release_version }}
           files: "${{ needs.provenance.outputs.attestation-name }}"
