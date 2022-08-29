@@ -107,5 +107,5 @@ jobs:
         with:
           tag_name: v${{ github.event.inputs.release_version }}
           body: See [CHANGELOG.md](https://github.com/$GITHUB_REPOSITORY/CHANGELOG.md) for more details.
-          files: ~/release/*
+          files: "${{ env.HOME }}"/release/*
           draft: true
