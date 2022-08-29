@@ -94,18 +94,20 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: "${{ needs.provenance.outputs.attestation-name }}"
-          path: ~/release/
+          path: ./release/
       - name: Download gradle release artifacts
         uses: actions/download-artifact@v3
         with:
           name: project-release-artifacts
-          path: ~/release/
+          path: ./release/
       - name: ls
-        run: find .
+        run: |
+          pwd
+          find .
       - name: Create draft release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ github.event.inputs.release_version }}
           body: See [CHANGELOG.md](https://github.com/$GITHUB_REPOSITORY/CHANGELOG.md) for more details.
-          files: "${{ env.HOME }}/release/*"
+          files: ./release/*
           draft: true
