@@ -58,7 +58,8 @@ jobs:
       - name: Build project
         run: |
           # this is a special gradle task for building release bundles see build.gradle.kts
-          ./gradlew clean createReleaseBundle
+          # override the version in gradle.properties
+          ./gradlew clean createReleaseBundle -Pversion=${{ github.event.inputs.release_version }}
       
       - name: Hash Artifacts
         id: hash
