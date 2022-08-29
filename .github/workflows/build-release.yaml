@@ -17,11 +17,12 @@ jobs:
             echo 'version "${{ github.event.inputs.release_version }}" not in ###.###.### format'
             exit 1
           fi
-  ci:
-    uses: ./.github/workflows/ci.yaml
+  #ci:
+    #uses: ./.github/workflows/ci.yaml
         
   create-tag:
-    needs: [checks, ci]
+    #needs: [checks, ci]
+    needs: [checks]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -97,6 +98,8 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: project-release-artifacts
+      - name: ls
+        run: find .
       - name: Create draft release
         uses: softprops/action-gh-release@v1
         with:
