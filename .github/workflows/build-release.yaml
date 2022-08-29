@@ -94,10 +94,12 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: "${{ needs.provenance.outputs.attestation-name }}"
+          path: ~/release/
       - name: Download gradle release artifacts
         uses: actions/download-artifact@v3
         with:
           name: project-release-artifacts
+          path: ~/release/
       - name: ls
         run: find .
       - name: Create draft release
@@ -105,7 +107,5 @@ jobs:
         with:
           tag_name: v${{ github.event.inputs.release_version }}
           body: See [CHANGELOG.md](https://github.com/$GITHUB_REPOSITORY/CHANGELOG.md) for more details.
-          files: |
-            "${{ needs.provenance.outputs.attestation-name }}"
-            ./build/release/*
+          files: ~/release/*
           draft: true
